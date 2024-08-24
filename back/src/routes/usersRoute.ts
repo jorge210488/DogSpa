@@ -8,7 +8,7 @@ router.get("/", getUsers);
 
 router.get("/:id", getUser);
 
-router.post("/register", createUser);
+router.post("/register", validateCredential, createUser);
 
 router.delete("/", deleteUser);
 

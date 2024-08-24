@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getAppointmentService, getAppointmentsService, scheduleAppointmentService, cancelAppointmentService } from "../services/appointmentsService";
 import { Appointment } from "../entities/Appointment";
+import AppointmentRepository from "../repositories/AppointmentRepository";
 
 export const getAppointments = async (req: Request, res: Response) => {
     const appointments: Appointment[] = await getAppointmentsService();

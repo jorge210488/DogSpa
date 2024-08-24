@@ -1,10 +1,7 @@
 interface IAppointment {
-    id: number,
+    id?: number,
     date: Date,
-    time: {
-        start: string,   // Ejemplo: "14:30"
-        duration: number // Ejemplo: 30 (minutos)
-    },
+    time: string,
     userId: number,
     status: string
 }

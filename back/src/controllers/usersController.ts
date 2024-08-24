@@ -1,42 +1,73 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { getUserService, getUsersService, createUserService, deleteUserService } from "../services/usersService";
 import { createCredential, validateCredential } from "../services/credentialsService";
-import { Credential } from "../entities/Credential";
 import { UserModel } from "../config/data-source";
+import UserRepository from "../repositories/UserRepository";
 
-export const getUsers = async (req: Request, res: Response) => {
-    const users = await getUsersService();
-    res.status(200).json(users);
-};  
-
-export const getUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    // const userId = Number(req.params.id); 
-    const user = await getUserService(Number(id)); // Llama al servicio con el id convertido
-    res.status(200).json(user); 
+export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const users = await getUsersService();
+        res.status(200).json(users);
+    } catch (error: any) {
+        next(error);
+    }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
-    const { id } = req.body;
-    await deleteUserService(id);
-    res.status(200).json({ message: "Eliminado correctamente" });
+export const getUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.params;
+        const user = await getUserService(Number(id));
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        res.status(200).json(user);
+    } catch (error: any) {
+        next(error); 
+    }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
-    const { username, password } = req.body;
-    const credentialId = await validateCredential({ username, password });
-    res.status(200).json(credentialId);
+export const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { id } = req.body;
+
+        if (!id) { return res.status(400).json({ message: "Falta el ID del usuario" });}
+        await deleteUserService(id);
+        res.status(200).json({ message: "Eliminado correctamente" });
+    } catch (error: any) {
+        next(error);
+    }
 };
 
-export const createUser = async (req: Request, res: Response) => {
-    const { username, password, name, email, birthdate, nDni } = req.body;
-    const credential = await createCredential({ username, password });
-    const newUser = await createUserService({ name, email, birthdate, nDni, credentialsId:credential.id});
-    //asociar nuevo usuario a su credencial
-    newUser.credentials = credential;
-    //guardando base datos
-    await UserModel.save(newUser);
-    res.status(201).json(newUser);
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ message: "Faltan datos requeridos" });
+        }
+        const credentialId = await validateCredential({ username, password });
+        res.status(200).json({ success: true, credentialId });
+    } catch (error: any) {
+               if (error.message === "Credenciales incorrectas") {
+                return res.status(400).json({ message: error.message });
+            }
+            next(error);
+    }
+};
+
+export const createUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { username, password, name, email, birthdate, nDni } = req.body;
+        if (!username || !password || !name || !email || !birthdate || !nDni) {
+            return res.status(400).json({ message: "Faltan datos requeridos" });
+        }
+        const credential = await createCredential({ username, password });
+        const newUser = await createUserService({name, email,birthdate, nDni,credentialsId: credential.id,});
+        newUser.credentials = credential;
+        await UserModel.save(newUser);
+        res.status(201).json(newUser);
+    } catch (error: any) {
+        next(error);
+    }
 };
 
 

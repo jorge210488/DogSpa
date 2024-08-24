@@ -1,5 +1,5 @@
 interface ICredential {
-    id: number,
+    id?: number,
     username: string,
     password: string,
 }
