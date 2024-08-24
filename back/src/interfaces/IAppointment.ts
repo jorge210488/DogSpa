@@ -6,7 +6,7 @@ interface IAppointment {
         duration: number // Ejemplo: 30 (minutos)
     },
     userId: number,
-    status: String
+    status: string
 }
 
 

@@ -1,21 +1,23 @@
 import credentialDto from "../dto/credentialDto";
-import ICredential from "../interfaces/ICredential";
+import { CredentialModel } from "../config/data-source";
+import { Credential } from "../entities/Credential";
 
+export const createCredential = async (credendialData: credentialDto): Promise<Credential> => {
+    const credential = await CredentialModel.create(credendialData);
+    await CredentialModel.save(credential);
+    return credential;
+}
 
-export let credentials: ICredential[] = [];
-let id: number = 1;
+export const validateCredential = async (validateData: credentialDto): Promise<number> => {
+    const { username, password } = validateData;
+    const foundCredential = await CredentialModel.findOne({where: { username } });
 
-export const createCredential = async (credentialData: credentialDto): Promise<number> => {
-    const newCredential: ICredential = {
-        id, 
-        username: credentialData.username,
-        password: credentialData.password
-    };
+    if (!foundCredential) { throw new Error("Credenciales incorrectas (usuario)"); }
 
-    credentials.push(newCredential);  
-    id++;
-    const credentialsId = newCredential.id;
-    return credentialsId; // Retornar el ID de la credencial creada
+    if (foundCredential.password !== String(password)) { throw new Error("Credenciales incorrectas (password)");}
+
+    return foundCredential.id;
 };
+
 
 

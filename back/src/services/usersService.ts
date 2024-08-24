@@ -1,41 +1,33 @@
+import { UserModel, CredentialModel } from "../config/data-source";
 import UserDto from "../dto/UserDto";
-import IUser from "../interfaces/IUser";
+import { User } from "../entities/User";
 
-
-let users: IUser[] = [];
-
-let id: number = 1;
-
-export const getUserService = async (id: number): Promise<IUser | undefined> => {
-    const user = users.find((user: IUser) => user.id === id);
+export const getUserService = async (id: number): Promise<User | null> => {
+    const user = await UserModel.findOneBy({id})
     return user;
 };
 
-export const getUsersService = async ():Promise<IUser[]> => {
+export const getUsersService = async (): Promise<User[]> => {
+    const users = await UserModel.find({
+            relations: {
+                credentials: true
+            }
+});
     return users;
 };
 
-export const createUserService = async (userData: UserDto): Promise<IUser> => {
-    const newUser: IUser = {
-        id,
-        name: userData.name,
-        email: userData.email,
-        birthdate: userData.birthdate,
-        nDni: userData.nDni,
-        credentialsId: userData.credentialsId,
-    };
-
-    users.push(newUser);
-    id++;
-    return newUser;
+export const createUserService = async (userData: UserDto): Promise<User> => {
+    const user = await UserModel.create(userData);
+    await UserModel.save(user);
+    return user;
 };
 
-
-export const deleteUserService = async (id:number): Promise<void> => {
-    users = users.filter((user: IUser) => {
-        return user.id !== id;
-    })
+export const deleteUserService = async (id: number): Promise<void> => {
+    const user = await UserModel.findOne({ where: { id } });
+    if (!user) { throw new Error("Usuario no encontrado");}
+    await UserModel.remove(user);
 };
+
 
 
 

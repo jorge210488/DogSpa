@@ -1,23 +1,19 @@
 import { Request, Response } from "express";
 import { getUserService, getUsersService, createUserService, deleteUserService } from "../services/usersService";
-import IUser from "../interfaces/IUser";
-
+import { createCredential, validateCredential } from "../services/credentialsService";
+import { Credential } from "../entities/Credential";
+import { UserModel } from "../config/data-source";
 
 export const getUsers = async (req: Request, res: Response) => {
-    const users: IUser[] = await getUsersService();
+    const users = await getUsersService();
     res.status(200).json(users);
 };  
 
 export const getUser = async (req: Request, res: Response) => {
-    const userId = Number(req.params.id); // Convierte id a un número
-    const user = await getUserService(userId); // Llama al servicio con el id convertido
-        res.status(200).json(user); // Si el usuario es encontrado, lo retorna
-};
-
-export const createUser = async (req: Request, res: Response) => {
-    const { name, email, birthdate, nDni, credentialsId } = req.body;
-    const newUser: IUser = await createUserService({ name, email, birthdate, nDni, credentialsId });
-    res.status(201).json(newUser);
+    const { id } = req.params;
+    // const userId = Number(req.params.id); 
+    const user = await getUserService(Number(id)); // Llama al servicio con el id convertido
+    res.status(200).json(user); 
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
@@ -27,14 +23,21 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-    res.send("Login del usuario a la aplicación");
+    const { username, password } = req.body;
+    const credentialId = await validateCredential({ username, password });
+    res.status(200).json(credentialId);
+};
+
+export const createUser = async (req: Request, res: Response) => {
+    const { username, password, name, email, birthdate, nDni } = req.body;
+    const credential = await createCredential({ username, password });
+    const newUser = await createUserService({ name, email, birthdate, nDni, credentialsId:credential.id});
+    //asociar nuevo usuario a su credencial
+    newUser.credentials = credential;
+    //guardando base datos
+    await UserModel.save(newUser);
+    res.status(201).json(newUser);
 };
 
 
 
-
-// export const deleteUser = async (req: Request, res:Response) => {
-//     const {id} = req.body
-//     await deleteUserService(id)
-//     res.status(200).json({ message:"Eliminado correctamente"});
-// };

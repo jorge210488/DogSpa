@@ -1,22 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
-import { credentials } from '../services/credentialsService';
 import ICredential from "../interfaces/ICredential"
 
 export const validateCredential = (req: Request, res: Response, next: NextFunction) => {
-    const { username, password } = req.headers;
+    const { username, password } = req.body;
 
     if (!username || !password) {
         return res.status(400).json({ message: "Faltan las credenciales" });
     }
 
+    // Verifica si el username ya existe en el array credentials (Para crear el usuario)
     const credential = credentials.find((cred: ICredential) => cred.username === username);
-
-    // Verificar si las credenciales coinciden
-    if (credential && credential.password === password) {
-        next();
-    } else {
-        return res.status(401).json({ message: "Credenciales incorrectas" });
+    
+    if (credential) {
+        return res.status(409).json({ message: "El username ya existe" });
     }
+    next();
 };
 
 

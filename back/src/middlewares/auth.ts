@@ -5,8 +5,6 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 
     if (token === "autenticado") next () 
     else res.status(400).json({ message: "Error. Falta autenticación"})
-
-
 };
 
 export default auth;

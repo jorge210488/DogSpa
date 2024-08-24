@@ -1,9 +1,9 @@
 interface UserDto {
     name: string,
     email: string,
-    birthdate: Date | string;
+    birthdate: string;
     nDni: number,
-    credentialsId: number,
+    credentialsId: number
 }
 
 export default UserDto;
