@@ -1,11 +1,11 @@
-import { AppointmentModel, UserModel } from "../config/data-source";
 import AppointmentDto from "../dto/AppointmentDto";
 import { Appointment } from "../entities/Appointment";
 import AppointmentRepository from "../repositories/AppointmentRepository";
+import UserRepository from "../repositories/UserRepository";
 
 export const getAppointmentsService = async (): Promise<Appointment[]> => {
     try {
-        const appointments = await AppointmentModel.find({
+        const appointments = await AppointmentRepository.find({
             relations: {
                 user: true
             }
@@ -18,7 +18,7 @@ export const getAppointmentsService = async (): Promise<Appointment[]> => {
 
 export const getAppointmentService = async (id: number): Promise<Appointment | null> => {
     try{
-        const appointment = await AppointmentModel.findOneBy({id})
+        const appointment = await AppointmentRepository.findOneBy({id})
         return appointment;
     } catch (error) {
         throw error;
@@ -26,27 +26,31 @@ export const getAppointmentService = async (id: number): Promise<Appointment | n
 };
 
 export const scheduleAppointmentService = async (appointment: AppointmentDto): Promise<Appointment> => {
-    if (!appointment.userId) { throw new Error("El ID dl usuario es obligatorio para crear un turno.");}
-    
-    const user = await UserModel.findOneBy({id: appointment.userId});
+    try{
+        //Busco el usuario por Id y además arrojo error ni si no existe 
+    const user = await UserRepository.findById(appointment.userId);
 
-    if (!user) { throw new Error("Usuario no encontrado.");}
-
-    const newAppointment = await AppointmentModel.create(appointment);
-    await AppointmentModel.save(newAppointment);
-
-    if(user){
+    const newAppointment = await AppointmentRepository.create(appointment);
+    await AppointmentRepository.save(newAppointment);
         newAppointment.user = user;
-        AppointmentModel.save(newAppointment);
-    }
+        AppointmentRepository.save(newAppointment);
+    
     return newAppointment;
+    }  catch (error: any) {
+        if (error.message === "Invalid ID") {error.statusCode = 400;}
+        throw error;
+}
 };
 
 export const cancelAppointmentService = async (id: number): Promise<void> => {
-    const appointment = await AppointmentModel.findOneBy({ id });
+    try{
+    const appointment = await AppointmentRepository.findOneBy({ id });
     if (!appointment) {
         throw new Error("El turno no existe.");
     }
     appointment.status = "cancelled";
-    await AppointmentModel.save(appointment);
+    await AppointmentRepository.save(appointment);
+} catch (error: any) {
+    throw error; 
+}
 };

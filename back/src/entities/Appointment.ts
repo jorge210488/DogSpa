@@ -17,6 +17,6 @@ export class Appointment {
     @ManyToOne(() => User, (user) => user.appointments)
     user: User
 
-    @Column()
+    @Column({default: "active"})
     status: string
 }

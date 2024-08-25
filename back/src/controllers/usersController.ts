@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getUserService, getUsersService, createUserService, deleteUserService } from "../services/usersService";
 import { createCredential, validateCredential } from "../services/credentialsService";
-import { UserModel } from "../config/data-source";
 import UserRepository from "../repositories/UserRepository";
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -45,7 +44,21 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             return res.status(400).json({ message: "Faltan datos requeridos" });
         }
         const credentialId = await validateCredential({ username, password });
-        res.status(200).json({ success: true, credentialId });
+        const user = await UserRepository.findOne({ where: { credentials: { id: credentialId } }, relations: ["credentials"] });
+
+        if (!user) {
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        }
+        res.status(200).json({
+            login: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                birthdate: user.birthdate,
+                nDni: user.nDni,
+            }
+        });
     } catch (error: any) {
                if (error.message === "Credenciales incorrectas") {
                 return res.status(400).json({ message: error.message });
@@ -63,7 +76,7 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         const credential = await createCredential({ username, password });
         const newUser = await createUserService({name, email,birthdate, nDni,credentialsId: credential.id,});
         newUser.credentials = credential;
-        await UserModel.save(newUser);
+        await UserRepository.save(newUser);
         res.status(201).json(newUser);
     } catch (error: any) {
         next(error);

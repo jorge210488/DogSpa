@@ -1,12 +1,11 @@
 import credentialDto from "../dto/credentialDto";
-import { CredentialModel } from "../config/data-source";
 import { Credential } from "../entities/Credential";
 import CredentialRepository from "../repositories/CredentialRespository";
 
 export const createCredential = async (credentialData: credentialDto): Promise<Credential> => {
     try {
-        const credential = await CredentialModel.create(credentialData);
-        await CredentialModel.save(credential);
+        const credential = await CredentialRepository.create(credentialData);
+        await CredentialRepository.save(credential);
         return credential;
     } catch (error: any) {
         throw new Error(`Error al crear las credenciales: ${error.message}`);
@@ -16,7 +15,7 @@ export const createCredential = async (credentialData: credentialDto): Promise<C
 export const validateCredential = async (validateData: credentialDto): Promise<number> => {
     try {
         const { username, password } = validateData;
-        const foundCredential = await CredentialModel.findOne({ where: { username } });
+        const foundCredential = await CredentialRepository.findOne({ where: { username } });
 
         if (!foundCredential) {throw new Error("Credenciales incorrectas");}
 

@@ -2,7 +2,7 @@ interface AppointmentDto {
     date: Date,
     time: string,
     userId: number,
-    status: string
+    status?: string
 }
 
 export default AppointmentDto;

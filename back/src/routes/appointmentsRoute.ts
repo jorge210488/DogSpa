@@ -8,6 +8,6 @@ router.get("/:id", getAppointment);
 
 router.post("/schedule", scheduleAppointment);
 
-router.put("/cancel", cancelAppointment);
+router.put("/cancel/:id", cancelAppointment);
 
 export default router;
