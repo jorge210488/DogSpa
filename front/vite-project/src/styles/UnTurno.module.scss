@@ -1,0 +1,32 @@
+// Variables
+$font-stack: 'Roboto', 'Helvetica', sans-serif;
+$grey: #F5F5F5;
+
+// Encapsular los estilos dentro de una clase específica para este componente
+.appointmentCard {
+  font-family: $font-stack;
+  background-color: $grey;
+  margin: 0 auto;
+  padding: 0px;
+  max-width: 80%;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  .text-info {
+    color: #17a2b8;
+  }
+
+  .text-muted {
+    color: #6c757d;
+  }
+
+  .text-danger {
+    color: #dc3545;
+  }
+  h5 {
+    font-size: 0.8rem;
+  }
+  strong {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,67 @@
+/* NavBar.module.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+.navbar {
+  background-color: #fff;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  margin: 5px;
+}
+
+.navbarBrand .logo {
+  font-size: 30px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #333;
+}
+
+.navbarMenu {
+  list-style-type: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+.navbarMenu li {
+  margin-right: 30px;
+}
+
+.navbarMenu li a {
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+  font-size: 20px;
+  transition: color 0.3s;
+}
+
+.navbarMenu li a:hover {
+  color: #e54d42;
+}
+
+.navbarActions .btnLogin,
+.navbarActions .btnSignup {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #e54d42;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  transition: background-color 0.3s;
+}
+
+.navbarActions .btnLogin:hover,
+.navbarActions .btnSignup:hover {
+  background-color: #c43c32;
+}
