@@ -1,9 +1,12 @@
+import { AppointmentStatus } from "../helpers/enumStatus";
+import { TimeRange } from "../helpers/enumTime";
+
 interface IAppointment {
     id?: number,
     date: Date,
-    time: string,
+    time: TimeRange,
     userId: number,
-    status: string
+    status: AppointmentStatus
 }
 
 

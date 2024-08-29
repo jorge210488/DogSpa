@@ -12,18 +12,15 @@ export const createCredential = async (credentialData: credentialDto): Promise<C
     }
 };
 
-export const validateCredential = async (validateData: credentialDto): Promise<number> => {
-    try {
-        const { username, password } = validateData;
-        const foundCredential = await CredentialRepository.findOne({ where: { username } });
+export const validateCredential = async (validateData: credentialDto): Promise<number | null> => {
+    const { username, password } = validateData;
+    const foundCredential = await CredentialRepository.findOne({ where: { username } });
 
-        if (!foundCredential) {throw new Error("Credenciales incorrectas");}
-
-        if (foundCredential.password !== String(password)) { throw new Error("Credenciales incorrectas");}
-        return foundCredential.id;
-    } catch (error: any) {
-        throw error;
+    if (!foundCredential || foundCredential.password !== String(password)) {
+        return null; // Para luego validar en el controlador credenciales incorrectas
     }
+
+    return foundCredential.id;
 };
 
 

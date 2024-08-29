@@ -1,5 +1,6 @@
 import AppointmentDto from "../dto/AppointmentDto";
 import { Appointment } from "../entities/Appointment";
+import { AppointmentStatus } from "../helpers/enumStatus";
 import AppointmentRepository from "../repositories/AppointmentRepository";
 import UserRepository from "../repositories/UserRepository";
 
@@ -48,7 +49,7 @@ export const cancelAppointmentService = async (id: number): Promise<void> => {
     if (!appointment) {
         throw new Error("El turno no existe.");
     }
-    appointment.status = "cancelled";
+    appointment.status = AppointmentStatus.CANCELLED;
     await AppointmentRepository.save(appointment);
 } catch (error: any) {
     throw error; 

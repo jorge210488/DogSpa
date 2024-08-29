@@ -5,50 +5,96 @@ import IUser from "../interfaces/IUser";
 import UserRepository from "../repositories/UserRepository";
 import AppointmentRepository from "../repositories/AppointmentRepository";
 import CredentialRepository from "../repositories/CredentialRespository";
+import { TimeRange } from "./enumTime";
+import { AppointmentStatus } from "./enumStatus";
 
 const preloadUsers = [{
     user: {
         name: "Jorge M",
-        email: "prueba@email.com",
+        email: "jorge@email.com",
         birthdate: "12/05/1995",
         nDni: 90556545,
     } as IUser, 
     credential: {
         username: "jorge95",
-        password: "1234"
+        password: "123456"
+    } as ICredential  
+},
+{
+    user: {
+        name: "Ana P",
+        email: "ana@email.com",
+        birthdate: "08/10/1992",
+        nDni: 12345678,
+    } as IUser, 
+    credential: {
+        username: "anap92",
+        password: "abcd1234"
     } as ICredential  
 }];
 
 
 export const preloadUsersAndCredentials = async () => {
-    const users = await UserRepository.find();
-    if (users.length) return console.log("No se hizo la precarga de datos porque ya hay usuarios");
-    
-    for (const data of preloadUsers) {
-        const newCredential = await CredentialRepository.create(data.credential);
-        await CredentialRepository.save(newCredential);
-        const newUser = await UserRepository.create({ 
-            ...data.user, 
-            credentials: newCredential
-        });
-        await UserRepository.save(newUser);
-    }
-    console.log("Precarga de usuarios y credenciales realizada con éxito");
-};
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
 
+    const users = await UserRepository.find();
+    if (users.length) {
+        console.log("No se hizo la precarga de datos porque ya hay usuarios");
+        await queryRunner.release();
+        return;
+    }
+
+    try {
+        await queryRunner.startTransaction();
+
+        for (const data of preloadUsers) {
+            const newCredential = await queryRunner.manager.create(CredentialRepository.target, data.credential);
+            await queryRunner.manager.save(newCredential);
+
+            const newUser = await queryRunner.manager.create(UserRepository.target, { 
+                ...data.user, 
+                credentials: newCredential
+            });
+            await queryRunner.manager.save(newUser);
+        }
+
+        console.log("Precarga de usuarios y credenciales realizada con éxito");
+        await queryRunner.commitTransaction();
+    } catch (error) {
+        console.log("Error al intentar precargar usuarios y credenciales");
+        await queryRunner.rollbackTransaction();
+    } finally {
+        console.log("Ha finalizado el intento de precarga de usuarios y credenciales");
+        await queryRunner.release();
+    }
+};
 
 const preloadAppointments: IAppointment[] = [{
     date: new Date("2024-08-08"),
-    time: "10:00-11:00",
+    time: TimeRange.ELEVEN_TO_THIRTEEN,
     userId: 1,
-    status: "active"
+    status: AppointmentStatus.ACTIVE
 },
 {
     date: new Date("2024-09-09"),
-    time: "12:00-13:00",
+    time: TimeRange.FIFTEEN_TO_SIXTEEN,
     userId: 1,
-    status: "active"   
-}];
+    status: AppointmentStatus.ACTIVE   
+},
+{
+    date: new Date("2024-08-15"),
+    time: TimeRange.FOURTEEN_TO_FIFTEEN,
+    userId: 2,
+    status: AppointmentStatus.ACTIVE
+},
+{
+    date: new Date("2024-09-09"),
+    time: TimeRange.TEN_TO_ELEVEN,
+    userId: 2,
+    status: AppointmentStatus.CANCELLED 
+}
+];
 
 export const preloadAppointmentsData = async () => {
     const queryRunner = AppDataSource.createQueryRunner();
@@ -80,7 +126,7 @@ export const preloadAppointmentsData = async () => {
         console.log("Error al intentar crear los turnos");
         await queryRunner.rollbackTransaction();
     } finally {
-        console.log("Ha finalizado el intento de precarga");
+        console.log("Ha finalizado el intento de precarga de turnos");
         await queryRunner.release();
     }
 };

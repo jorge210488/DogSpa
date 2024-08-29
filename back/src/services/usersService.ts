@@ -4,7 +4,10 @@ import UserRepository from "../repositories/UserRepository";
 
 export const getUserService = async (id: number): Promise<User | null> => {
     try {
-        const user = await UserRepository.findOneBy({ id });
+        const user = await UserRepository.findOne({
+            where: { id },
+            relations: ["appointments"]
+        });
         if (!user) { return null; }
         return user;
     } catch (error: any) { throw new Error(`Error al obtener el usuario con ID ${id}: ${error.message}`);

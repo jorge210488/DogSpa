@@ -14,7 +14,4 @@ const UserRepository = AppDataSource.getRepository(User).extend({
     }
 });
 
-
 export default UserRepository;
-
-// const user = await UserRepository.findById(appointment.userId);
