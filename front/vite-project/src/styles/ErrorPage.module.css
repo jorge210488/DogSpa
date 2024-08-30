@@ -1,0 +1,13 @@
+.errorPageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+    text-align: center;
+  }
+  
+  .errorPageContent {
+    max-width: 600px; 
+    padding: 20px;
+  }
+  

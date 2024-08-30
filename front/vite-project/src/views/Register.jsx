@@ -1,19 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik, Field, Form as FormikForm, ErrorMessage } from 'formik';
 import Button from 'react-bootstrap/Button';
 import validateRegisterForm from '../helpers/validateRegisterForm';
 import axios from 'axios';
 
 const Register = () => {
-    const [formValues, setFormValues] = useState({
-        username: "",
-        password: "",
-        name: "",
-        email: "",
-        birthdate: "",
-        nDni: ""
-    });
-
     const handleSubmit = async (values, actions) => {
         try {
             const response = await axios.post('http://localhost:3000/users/register', values);
@@ -30,10 +21,16 @@ const Register = () => {
 
     return (
         <Formik
-            initialValues={formValues}
-            enableReinitialize={true}
+            initialValues={{
+                username: "",
+                password: "",
+                name: "",
+                email: "",
+                birthdate: "",
+                nDni: ""
+            }}
             validate={validateRegisterForm}
-            onSubmit={handleSubmit} // Pasamos handleSubmit directamente
+            onSubmit={handleSubmit}
         >
             {({ isSubmitting }) => (
                 <FormikForm>

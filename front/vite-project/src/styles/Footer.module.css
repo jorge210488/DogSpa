@@ -1,0 +1,26 @@
+.footerContainer {
+    background-color: #f8f9fa; /* Color de fondo */
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 20px;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
+.footerContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLogo {
+    height: 40px; /* Ajusta el tamaño según el logo */
+    margin-right: 10px;
+}
+
+.footerText {
+    margin: 0;
+    font-size: 14px;
+    color: #333;
+}
