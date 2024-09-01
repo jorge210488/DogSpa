@@ -40,19 +40,34 @@ export const scheduleAppointment = async (req: Request, res: Response, next: Nex
     }
 };
 
+// export const cancelAppointment = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//     const appointmentId = Number(req.body.id);  
+
+//     if (appointmentId !== Number(req.params.id)) {
+//         console.log("paso esto");
+//         return res.status(404).json({ message: "El ID en la ruta no coincide con el ID en el cuerpo de la solicitud." });
+//     }
+//     await cancelAppointmentService(appointmentId);
+//     res.status(200).json({ message: "El turno ha sido cancelado exitosamente" });
+//     }catch (error: any) {
+//         if (error.message === "El turno no existe.") {
+//             return res.status(404).json({ message: error.message });
+//         }
+//         next(error);
+//     }
+// };
+
 export const cancelAppointment = async (req: Request, res: Response, next: NextFunction) => {
     try {
-    const appointmentId = Number(req.body.id);  
-
-    if (appointmentId !== Number(req.params.id)) {
-        return res.status(404).json({ message: "El ID en la ruta no coincide con el ID en el cuerpo de la solicitud." });
-    }
-    await cancelAppointmentService(appointmentId);
-    res.status(200).json({ message: "El turno ha sido cancelado exitosamente" });
-    }catch (error: any) {
+        const appointmentId = Number(req.params.id);
+        await cancelAppointmentService(appointmentId);
+        res.status(200).json({ message: "El turno ha sido cancelado exitosamente" });
+    } catch (error: any) {
         if (error.message === "El turno no existe.") {
             return res.status(404).json({ message: error.message });
         }
         next(error);
     }
 };
+
