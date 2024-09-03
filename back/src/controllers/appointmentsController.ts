@@ -5,13 +5,17 @@ import { mailService } from '../services/mailService';
 import AppointmentRepository from "../repositories/AppointmentRepository";
 
 export const getAppointments = async (req: Request, res: Response, next: NextFunction) => {
-    try{
-    const appointments = await getAppointmentsService();
-    res.status(200).json(appointments);
-    }catch (error: any){
+    try {
+        const appointments = await getAppointmentsService();
+        if (appointments.length === 0) {
+            return res.status(404).json({ message: "No se encontraron turnos." });
+        }
+        res.status(200).json(appointments);
+    } catch (error: any) {
         next(error);
     }
-};  
+};
+
 
 export const getAppointment = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -32,7 +36,20 @@ export const scheduleAppointment = async (req: Request, res: Response, next: Nex
         if (!date || !time || !userId) {
             return res.status(400).json({ message: "Datos incorrectos" });
         }
-        const newAppointment: Appointment = await scheduleAppointmentService({ date, time, userId });
+        const newAppointment = await scheduleAppointmentService({ date, time, userId });
+        const appointment = await AppointmentRepository.findOne({
+            where: { id: newAppointment.id },
+            relations: ['user'],
+        });
+
+        if (!appointment || !appointment.user) {
+            return res.status(404).json({ message: "Usuario no encontrado." });
+        }
+        await mailService.sendMail(
+            appointment.user.email,
+            'DogSpa Cita Programada',
+            `Hola ${appointment.user.name},\n\nTu cita para el ${date} a las ${time} ha sido programada exitosamente. Puedes estar tranquilo/a que tu perrito/a tendrá el mejor cuidado y atención. ¡Esperamos verte pronto!`
+        );
         res.status(201).json(newAppointment);
     } catch (error: any) {
         if (error.statusCode === 400 || error.message === "Invalid ID") {

@@ -15,17 +15,13 @@ function isValidDay(date: string): boolean {
 
 export const validateAppointment = (req: Request, res: Response, next: NextFunction) => {
     const { date, time } = req.body;
-
     // Validar que el time esté dentro de los valores permitidos
     if (!isValidTimeRange(time)) {
         return res.status(400).json({ message: "El horario debe estar dentro de los rangos permitidos y no debe exceder las 2 horas." });
     }
-
     // Validar que el día esté entre lunes y sábado
     if (!isValidDay(date)) {
         return res.status(400).json({ message: "Los turnos solo pueden agendarse de lunes a sábado." });
     }
-
-    // Si pasa las validaciones, continuar con el siguiente middleware o controlador
     next();
 };
