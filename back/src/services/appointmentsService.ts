@@ -28,7 +28,6 @@ export const getAppointmentService = async (id: number): Promise<Appointment | n
 
 export const scheduleAppointmentService = async (appointment: AppointmentDto): Promise<Appointment> => {
     try{
-        //Busco el usuario por Id y además arrojo error ni si no existe 
     const user = await UserRepository.findById(appointment.userId);
 
     const newAppointment = await AppointmentRepository.create(appointment);
@@ -43,15 +42,11 @@ export const scheduleAppointmentService = async (appointment: AppointmentDto): P
 }
 };
 
-export const cancelAppointmentService = async (id: number): Promise<void> => {
-    try{
-    const appointment = await AppointmentRepository.findOneBy({ id });
-    if (!appointment) {
-        throw new Error("El turno no existe.");
+export const cancelAppointmentService = async (appointment: Appointment): Promise<void> => {
+    try {
+        appointment.status = AppointmentStatus.CANCELLED;
+        await AppointmentRepository.save(appointment);
+    } catch (error: any) {
+        throw error; 
     }
-    appointment.status = AppointmentStatus.CANCELLED;
-    await AppointmentRepository.save(appointment);
-} catch (error: any) {
-    throw error; 
-}
 };

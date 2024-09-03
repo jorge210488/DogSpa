@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction} from "express";
 import { getAppointmentService, getAppointmentsService, scheduleAppointmentService, cancelAppointmentService } from "../services/appointmentsService";
 import { Appointment } from "../entities/Appointment";
+import { mailService } from '../services/mailService';
+import AppointmentRepository from "../repositories/AppointmentRepository";
 
 export const getAppointments = async (req: Request, res: Response, next: NextFunction) => {
     try{
@@ -40,34 +42,35 @@ export const scheduleAppointment = async (req: Request, res: Response, next: Nex
     }
 };
 
-// export const cancelAppointment = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//     const appointmentId = Number(req.body.id);  
-
-//     if (appointmentId !== Number(req.params.id)) {
-//         console.log("paso esto");
-//         return res.status(404).json({ message: "El ID en la ruta no coincide con el ID en el cuerpo de la solicitud." });
-//     }
-//     await cancelAppointmentService(appointmentId);
-//     res.status(200).json({ message: "El turno ha sido cancelado exitosamente" });
-//     }catch (error: any) {
-//         if (error.message === "El turno no existe.") {
-//             return res.status(404).json({ message: error.message });
-//         }
-//         next(error);
-//     }
-// };
-
 export const cancelAppointment = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const appointmentId = Number(req.params.id);
-        await cancelAppointmentService(appointmentId);
+        const appointment = await AppointmentRepository.findOne({
+            where: { id: appointmentId },
+            relations: ['user'],
+        });
+        if (!appointment) {
+            return res.status(404).json({ message: "El turno no existe." });
+        }
+        await cancelAppointmentService(appointment);
+
+        // Enviar correo de notificación al usuario
+        const userEmail = appointment.user.email;
+        const userName = appointment.user.name;
+        const appointmentDate = appointment.date;
+        const appointmentTime = appointment.time;
+
+        await mailService.sendMail(
+            userEmail,
+            'DogSpa Cita Cancelada',
+            `Hola ${userName},\n\nLamentamos informarte que tu cita para el ${appointmentDate} a las ${appointmentTime} ha sido cancelada.`
+        );
+
         res.status(200).json({ message: "El turno ha sido cancelado exitosamente" });
     } catch (error: any) {
-        if (error.message === "El turno no existe.") {
-            return res.status(404).json({ message: error.message });
-        }
+        console.error('Error in cancelAppointment:', error);
         next(error);
     }
 };
+
 

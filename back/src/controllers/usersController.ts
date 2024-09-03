@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import { getUserService, getUsersService, createUserService, deleteUserService } from "../services/usersService";
+import { updateUserProfileImageService } from "../services/updateUserProfileImageService";
 import { createCredential, validateCredential } from "../services/credentialsService";
 import UserRepository from "../repositories/UserRepository";
-import { AppDataSource } from "../config/data-source";
-import { User } from "../entities/User";
+import { mailService } from '../services/mailService';
+
 
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -48,7 +49,10 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
             return res.status(400).json({ message: "Credenciales incorrectas" });
         }
 
-        const user = await UserRepository.findOne({ where: { credentials: { id: credentialId } }, relations: ["credentials"] });
+        const user = await UserRepository.findOne({
+            where: { credentials: { id: credentialId } },
+            relations: ["credentials"],
+        });
 
         if (!user) {
             return res.status(400).json({ message: "Usuario no encontrado" });
@@ -62,12 +66,14 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
                 email: user.email,
                 birthdate: user.birthdate,
                 nDni: user.nDni,
-            }
+                profileImage: user.profileImage, // Incluimos la imagen de perfil 
+            },
         });
     } catch (error: any) {
         next(error);
     }
 };
+
 
 export const createUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -79,11 +85,34 @@ export const createUser = async (req: Request, res: Response, next: NextFunction
         const newUser = await createUserService({name, email,birthdate, nDni,credentialsId: credential.id,});
         newUser.credentials = credential;
         await UserRepository.save(newUser);
+
+        await mailService.sendMail(
+            email,
+            'Bienvenido a DogSpa',
+            `Hola ${name},\n\nGracias por registrarte en DogSpa, estamos contentos de tenerte aquí, espero podamos darle un día de relajación y disfrute a tu perrito!.`
+        );
+
         res.status(201).json(newUser);
     } catch (error: any) {
         next(error);
     }
 };
 
+export const updateUserProfileImage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = Number(req.params.id); 
+        const imagePath = req.file?.path; // Extrae la ruta temporal de la imagen que ha sido cargada en el servidor a través del middleware multer. req.file?.path accede a la ruta de la imagen almacenada temporalmente
+
+        if (!imagePath) {
+            return res.status(400).json({ message: "No se ha proporcionado ninguna imagen." });
+        }
+
+        const updatedUser = await updateUserProfileImageService(userId, imagePath);
+        res.status(200).json({ message: "Imagen de perfil actualizada exitosamente", user: updatedUser });
+    } catch (error: any) {
+        console.error("Error en updateUserProfileImage:", error.message);
+        next(error);
+    }
+};
 
 

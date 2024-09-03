@@ -7,27 +7,29 @@ import { Credential } from "./Credential";
 })
 export class User {
     @PrimaryGeneratedColumn()
-    id?: number
+    id?: number;
 
     @Column({
         length: 100
     })
-    name: string
+    name: string;
 
     @Column()
-    email: string
+    email: string;
 
     @Column()
-    birthdate: string
+    birthdate: string;
 
     @Column("integer")
-    nDni: number
+    nDni: number;
 
     @OneToOne(() => Credential)
     @JoinColumn({ name: 'credentialsId' })  // Especifica la columna 'credentialsId' como la clave foránea
     credentials: Credential;
 
     @OneToMany(() => Appointment, (appointment => appointment.user))
-    appointments: Appointment[]
-}
+    appointments: Appointment[];
 
+    @Column({ nullable: true })
+    profileImage?: string; // Nueva columna para almacenar la URL de la imagen de perfil
+}

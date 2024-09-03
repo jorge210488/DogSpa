@@ -1,9 +1,12 @@
 import { Router } from "express";
-import {getUsers, getUser, createUser, loginUser, deleteUser} from "../controllers/usersController";
+import multer from "multer";
+import {getUsers, getUser, createUser, loginUser, deleteUser, updateUserProfileImage} from "../controllers/usersController";
 import { validateCredential } from "../middlewares/validateCredential";
 import { loginValidate } from "../middlewares/loginValidate";
 
 const router = Router();
+
+const upload = multer({ dest: "uploads/" });
 
 router.get("/", getUsers);
 
@@ -15,4 +18,8 @@ router.delete("/", deleteUser);
 
 router.post("/login", loginValidate, loginUser);
 
+router.put("/:id/profile-image", upload.single("image"), updateUserProfileImage);
+
+
 export default router;
+

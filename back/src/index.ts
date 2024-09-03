@@ -4,17 +4,6 @@ import "reflect-metadata";
 import { AppDataSource } from "./config/data-source";
 import { preloadAppointmentsData, preloadUsersAndCredentials} from "./helpers/preloadData";
 
-
-
-// AppDataSource.initialize()
-//   .then(res => {
-    
-//     server.listen(PORT, () => {
-      
-//     });
-//   })
-
-
   const initializeApp = async () => {
     await AppDataSource.initialize();
         console.log("Conexión a la base de datos realizada con éxito");
