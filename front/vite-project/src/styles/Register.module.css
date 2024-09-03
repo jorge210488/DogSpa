@@ -1,0 +1,29 @@
+/* Register.module.css */
+
+.registerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%; /* Ocupa el 80% del ancho de la página */
+    margin: 0 auto; /* Centra el contenedor en la página */
+    padding: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Añade una sombra ligera para un mejor diseño */
+    background-color: #fff; /* Fondo blanco para que destaque */
+    border-radius: 10px; /* Esquinas redondeadas */
+}
+
+.registerImageContainer {
+    flex: 1;
+    padding-right: 20px; /* Espacio entre la imagen y el formulario */
+}
+
+.registerImage {
+    width: 100%;
+    height: auto;
+    border-radius: 10px; /* Aplica un borde redondeado si es necesario */
+}
+
+.registerFormContainer {
+    flex: 1;
+    font-size: 1rem; /* Reduce el tamaño de las letras un poco */
+}

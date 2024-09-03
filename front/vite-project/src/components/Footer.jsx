@@ -7,7 +7,11 @@ const Footer = () => {
         <footer className={styles.footerContainer}>
             <div className={styles.footerContent}>
                 <Link to="/home">
-                    <img src="/path-to-your-logo.png" alt="DogSpa Logo" className={styles.footerLogo} />
+                <img 
+                src="https://res.cloudinary.com/deflfnoba/image/upload/v1725246181/fotosm3/acewvbwzg9bvmar8wz9g.png" 
+                alt="Your Logo" 
+                className={styles.footerLogo} 
+            />
                 </Link>
                 <p className={styles.footerText}>2024 DogSpa. Todos los derechos reservados.</p>
             </div>

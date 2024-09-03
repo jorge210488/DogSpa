@@ -44,23 +44,17 @@ transform: translateX(-50%);
 
 .info .shape {
   background-image: url(https://img.freepik.com/fotos-premium/cinco-perros-diferentes-razas-sentados-fila-contra-fondo-azul-verde-perros-estan-todos-mirando-camara_14117-99839.jpg);
-  /* background-repeat: no-repeat; */
-  /* background-size: 300px 200px; */
-  /* background-position: calc(50vw + 300px) 330px; */
+
 }
 
 .content {
   display: inline-block;
   margin-top: calc(20% + 4vw);
-  /* width: 80%; */
-  /* height: 40%; */
   padding: 0 5%;
-  /* text-align: left; */
   color: #444;
 }
 
 h3 {
-  /* margin: 0; */
   color: #222;
   font-size: 25px;
   font-weight: normal;

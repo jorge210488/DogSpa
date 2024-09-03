@@ -1,0 +1,31 @@
+.formHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.formTitle {
+    margin-right: 10px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #222;
+}
+
+.icon {
+    font-size: 35px; /* Aumenta el tamaño del icono */
+    margin-right: 5px; /* Añade un poco de espacio entre el icono y el texto */
+}
+
+.formContainer {
+    width: 20%; /* Ajusta el ancho del formulario */
+    margin: 0 auto;
+}
+
+.buttonContainer {
+    text-align: center; /* Centra el botón dentro del contenedor */
+}
+
+.submitButton {
+    margin-top: 20px; /* Añade espacio superior al botón */
+}

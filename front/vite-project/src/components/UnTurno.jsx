@@ -1,7 +1,35 @@
 import React from 'react';
 import styles from "../styles/UnTurno.module.scss";
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { setUserAppointments } from '../redux/reducer';
 
 const Appointment = ({ id, date, userId, time, status, isHeader }) => {
+    const dispatch = useDispatch();
+    const userAppointments = useSelector((state) => state.user.userAppointments);
+
+    const handleCancel = async () => {
+        const confirmCancel = window.confirm("¿Estás seguro? No es posible reagendar después de cancelado");
+        if (!confirmCancel) return; // Si el usuario cancela no se hace nada
+
+        try {
+            const response = await axios.put(`http://localhost:3000/appointments/cancel/${id}`);
+
+            if (response.status === 200) {
+                const updatedAppointments = userAppointments.map(appointment =>
+                    appointment.id === id ? { ...appointment, status: 'cancelled' } : appointment
+                );
+
+                dispatch(setUserAppointments(updatedAppointments)); // Actualizamos el store con el turno actualizado
+            } else {
+                console.error('Error al cancelar el turno:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error al cancelar el turno:', error);
+            alert('Hubo un problema al cancelar el turno. Por favor, inténtalo nuevamente.');
+        }
+    };
+
     if (isHeader) {
         return (
             <div className={`${styles.appointmentCard} col-12 my-2`}>
@@ -50,9 +78,9 @@ const Appointment = ({ id, date, userId, time, status, isHeader }) => {
                             </h5>
                         </div>
                         <div className="col-3 col-md-2 text-center">
-                            <button className="btn btn-danger btn-sm">
-                                Cancelar
-                            </button>
+                            {status === "active" && (
+                                <button className="btn btn-danger btn-sm" onClick={handleCancel}> Cancelar</button>
+                            )}
                         </div>
                     </div>
                 </div>

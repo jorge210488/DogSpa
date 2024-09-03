@@ -1,11 +1,10 @@
 .footerContainer {
     background-color: #f8f9fa; /* Color de fondo */
-    position: fixed;
-    left: 0;
-    bottom: 0;
+    position: relative; /* Ajusta la posición */
     width: 100%;
     padding: 10px 20px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); 
+    margin-top: auto; 
 }
 
 .footerContent {
@@ -15,9 +14,13 @@
 }
 
 .footerLogo {
-    height: 40px; /* Ajusta el tamaño según el logo */
+    height: 20px; /* Altura original de la imagen */
+    width: auto;
+    transform: scale(2); /* Aumenta la imagen en un 50% */
+
     margin-right: 10px;
 }
+
 
 .footerText {
     margin: 0;

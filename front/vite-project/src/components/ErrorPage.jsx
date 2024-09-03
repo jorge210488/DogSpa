@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styles from "../styles/ErrorPage.module.css"; // Importa el archivo CSS Module
+import styles from "../styles/ErrorPage.module.css"; 
 
 function ErrorPage() {
   const navigate = useNavigate();
-  const [countdown, setCountdown] = useState(10);
+  const [countdown, setCountdown] = useState(5); 
 
   useEffect(() => {
     const countdownInterval = setInterval(() => {
       setCountdown((prevCountdown) => prevCountdown - 1);
     }, 1000);
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       clearInterval(countdownInterval);
       navigate("/home");
-    }, 10000);
+    }, 5000); 
 
-    return () => clearInterval(countdownInterval);
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(timeoutId); 
+    };
   }, [navigate]);
 
   return (

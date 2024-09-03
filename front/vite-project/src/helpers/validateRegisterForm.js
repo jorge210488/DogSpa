@@ -15,11 +15,11 @@ const validateRegisterForm = (values) => {
 
     if (!values.name) {
         errors.name = 'Nombre y Apellido es requerido';
-    } else if (/[^a-zA-Z0-9\s]/.test(values.name)) {
+    } else if (/[^a-zA-ZÀ-ÿ\s]/.test(values.name)) {  // Permite letras con acentos y espacios
         errors.name = 'Nombre y Apellido no puede contener caracteres especiales como !*+_-¡';
     } else if (values.name.length > 100) {
         errors.name = 'Nombre y Apellido no puede tener más de 100 caracteres';
-    }
+    }    
 
     if (!values.email) {
         errors.email = 'Email es requerido';
