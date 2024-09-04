@@ -6,8 +6,10 @@ import Home from "./views/Home";
 import Appointments from "./views/MisTurnos";
 import Register from "./views/Register";
 import Login from "./views/Login";
+import Contact from "./views/Contact";
+import Galeria from "./views/Galeria";
 import ErrorPage from "./components/ErrorPage";
-import "./App.css"; // Importa el archivo App.css
+import "./App.css"; 
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/gallery" element={<Galeria />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/appointments" element={<Appointments />} />

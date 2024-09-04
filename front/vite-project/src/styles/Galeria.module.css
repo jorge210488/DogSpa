@@ -1,0 +1,56 @@
+.galeriaContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+/* Estilos para la presentación de la galería */
+.presentationContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 0px;
+}
+
+.presentationImage {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.presentationText {
+    max-width: 600px;
+    text-align: left;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+
+
+.galeriaTitle {
+    margin-top: 20px; 
+    font-size: 1.5rem; 
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.cardsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.largeCard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}

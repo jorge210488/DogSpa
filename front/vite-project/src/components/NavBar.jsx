@@ -25,6 +25,12 @@ const NavBar = () => {
     const handleProfileImageChange = async (event) => {
         const file = event.target.files[0];
         if (file) {
+            const confirmed = window.confirm(
+                "¿Estás seguro? Al subir esta foto, das permiso para que sea utilizada en la página y estará disponible para la vista de todos."
+            );
+
+            if (!confirmed) return;
+
             const formData = new FormData();
             formData.append('image', file);
 
@@ -61,7 +67,7 @@ const NavBar = () => {
             <ul className={styles.navbarMenu}>
                 <li><Link to="/home">Inicio</Link></li>
                 {user && (<li><Link to="/appointments">Mis Turnos</Link></li>)}
-                <li><Link to="/about">Acerca</Link></li>
+                <li><Link to="/gallery">Galería</Link></li>
                 <li><Link to="/contact">Contacto</Link></li>
             </ul>
             <div className={styles.navbarActions}>
@@ -73,7 +79,7 @@ const NavBar = () => {
                             {showDropdown && (
                                 <div className={styles.dropdownMenu}>
                                     <label htmlFor="profileImageInput" className={styles.dropdownItem}>
-                                        <FontAwesomeIcon icon={faImage} /> Agregar foto perfil
+                                        <FontAwesomeIcon icon={faImage} /> Agregar la foto del perrito
                                     </label>
                                     <input 
                                         type="file" 

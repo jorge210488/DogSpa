@@ -1,0 +1,199 @@
+.contactContainer {
+    overflow-x: hidden;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card {
+    z-index: 1;
+    position: relative;
+    width: 300px;
+    height: 450px;
+    margin: 0 auto;
+    margin-top: 50px;
+    background-color: white;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.7s ease-in-out;
+}
+
+.card.active {
+    height: 490px;
+}
+
+.banner {
+    z-index: 2;
+    position: relative;
+    margin-top: -154px;
+    width: 100%;
+    height: 150px;
+    background-image: url("https://res.cloudinary.com/deflfnoba/image/upload/v1725389878/fotosm3/uudrlys4vbgjxbwjcupl.jpg");
+    background-size: cover;
+    border-bottom: solid 1px lightgrey;
+    transition: all 0.7s ease-in-out;
+}
+
+.banner.active {
+    height: 0;
+}
+
+.photo {
+    z-index: 3;
+    position: relative;
+    border-radius: 50%;
+    height: 150px;
+    width: 150px;
+    background-color: white;
+    margin: 0 auto;
+    background-image: url("https://res.cloudinary.com/deflfnoba/image/upload/v1725388333/fotosm3/vwgkvzfcoeug1xn7rf8m.jpg");
+    background-size: cover;
+    background-position: 50% 50%;
+    top: 75px;
+    box-shadow: inset 0px 0px 5px 1px rgba(0,0,0,0.3);
+    transition: top 0.7s ease-in-out, background 0.15s ease;
+}
+
+.photo.active {
+    top: -10px; 
+}
+
+.card ul {
+    list-style: none;
+    text-align: center;
+    padding-left: 0;
+    margin-top: 87px;
+    margin-bottom: 30px;
+    font-size: 20px;
+    transition: all 0.7s ease-in-out;
+}
+
+.card ul.active {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.card i {
+    font-size: 25px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-left: 40px;
+    margin-right: 150px;
+    width: 300px;
+    text-align: left;
+    color: #C7D0E1;
+}
+
+button.contact {
+    margin: 0 auto;
+    text-align: center;
+    margin-top: -10px;
+    width: 100%;
+    height: 35px;
+    display: block;
+    border: none;
+    background-color: #C7D0E1;
+    font-family: inherit;
+    font-size: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+button.contact:hover {
+    cursor: pointer;
+    background-color: #979da8;
+}
+
+button.contact:focus {
+    outline: 0;
+}
+
+.socialMediaBanner {
+    width: 300px;
+    height: 50px;
+    margin-top: 5px;
+    text-align: center;
+    position: absolute;
+    transition: all 1.5s ease-in-out;
+}
+
+.socialMediaBanner a {
+    display: inline-block;
+    margin-right: 15px;  
+    margin-left: 15px;   
+    font-size: 30px;     
+    color: inherit;      
+    transition: all 0.3s ease-in-out;
+}
+
+.socialMediaBanner a:hover i {
+    color: #979da8;  
+}
+
+.socialMediaBanner i {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.emailForm {
+    height: 0;
+    overflow: hidden;
+    width: 300px;
+    transition: all 0.5s ease-in-out;
+    margin-top: 0px; 
+}
+
+.emailForm.active {
+    height: 310px;
+    z-index: 3;
+    transition: all 1s ease-in-out;
+    margin-top: 40px; 
+}
+
+.emailForm input {
+    width: 200px;
+    margin: 0 auto;
+    font-family: inherit;
+    border: 1px solid #dadee5;
+    margin-top: 10px; 
+    height: 30px;
+    display: block;
+    transition: all 0.2s ease-in-out;
+    font-size:14px;
+}
+
+.emailForm input:focus,
+.emailForm textarea:focus {
+    border: 1px solid grey;
+    outline: none;
+}
+
+.emailForm textarea {
+    width: 200px;
+    height: 90px;
+    background-color: white;
+    margin: 0 auto;
+    font-size:14px;
+    display: block;
+    margin-top: 10px; 
+    border: 1px solid #dadee5;
+    font-family: inherit;
+    transition: all 0.3s ease-in-out;
+}
+
+.emailForm button {
+    margin-top: 30px;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    font-size: 12px; 
+    margin-top: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.errorIcon {
+    margin-left: 5px; 
+}
