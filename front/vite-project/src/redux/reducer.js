@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    user: null, // Estado para almacenar la información del usuario
-    userAppointments: [], // Estado para almacenar las citas del usuario
+    user: null, 
+    userAppointments: [], 
 };
 
 export const userSlice = createSlice({

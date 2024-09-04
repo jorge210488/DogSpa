@@ -10,13 +10,13 @@
   top: -70px;
   left: 50%;
   transform: translateX(-50%);
-  width: 1500px; /* Ajusta el ancho del contenedor de la imagen */
-  height: 400px; /* Ajusta la altura del contenedor de la imagen */
+  width: 1500px; 
+  height: 400px; 
   border-radius: 50% 50% 20% 50%;
   background-image: url(https://www.lavanguardia.com/files/og_thumbnail/files/fp/uploads/2024/03/12/65f06e94cdcd4.r_d.1022-664-6322.jpeg);
   background-repeat: no-repeat;
-  background-size: contain; /* Asegura que la imagen se ajuste dentro del contenedor sin distorsionarse */
-  background-position: center center; /* Centra la imagen en el contenedor */
+  background-size: contain; 
+  background-position: center center; 
 }
 
 .info {
@@ -25,8 +25,8 @@
   top: 135px;
   left: 50%;
   transform: translateX(-50%);
-  height: 400px; /* Ajusta la altura del contenedor */
-  width: 700px; /* Ajusta el ancho del contenedor */
+  height: 400px; 
+  width: 700px; 
   background-color: #f2f2f2;
   border-radius: 25px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.43);

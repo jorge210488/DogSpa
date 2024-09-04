@@ -7,8 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Register.module.css'; 
 
 const Register = () => {
-    const navigate = useNavigate(); // Inicializa useNavigate
-
+    const navigate = useNavigate(); 
     const handleSubmit = async (values, actions) => {
         try {
             const response = await axios.post('http://localhost:3000/users/register', values);
