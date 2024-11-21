@@ -8,38 +8,117 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUser = exports.deleteUser = exports.createUser = exports.getUser = exports.getUsers = void 0;
+exports.updateUserProfileImage = exports.createUser = exports.loginUser = exports.deleteUser = exports.getUser = exports.getUsers = void 0;
 const usersService_1 = require("../services/usersService");
-const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, usersService_1.getUsersService)();
-    res.status(200).json(users);
+const updateUserProfileImageService_1 = require("../services/updateUserProfileImageService");
+const credentialsService_1 = require("../services/credentialsService");
+const UserRepository_1 = __importDefault(require("../repositories/UserRepository"));
+const mailService_1 = require("../services/mailService");
+const getUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield (0, usersService_1.getUsersService)();
+        res.status(200).json(users);
+    }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getUsers = getUsers;
-const getUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = Number(req.params.id); // Convierte id a un número
-    const user = yield (0, usersService_1.getUserService)(userId); // Llama al servicio con el id convertido
-    res.status(200).json(user); // Si el usuario es encontrado, lo retorna
+const getUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const user = yield (0, usersService_1.getUserService)(Number(id));
+        if (!user) {
+            return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+        res.status(200).json(user);
+    }
+    catch (error) {
+        next(error);
+    }
 });
 exports.getUser = getUser;
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, birthdate, nDni, credentialsId } = req.body;
-    const newUser = yield (0, usersService_1.createUserService)({ name, email, birthdate, nDni, credentialsId });
-    res.status(201).json(newUser);
-});
-exports.createUser = createUser;
-const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.body;
-    yield (0, usersService_1.deleteUserService)(id);
-    res.status(200).json({ message: "Eliminado correctamente" });
+const deleteUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.body;
+        if (!id) {
+            return res.status(400).json({ message: "Falta el ID del usuario" });
+        }
+        yield (0, usersService_1.deleteUserService)(id);
+        res.status(200).json({ message: "Eliminado correctamente" });
+    }
+    catch (error) {
+        next(error);
+    }
 });
 exports.deleteUser = deleteUser;
-const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("Login del usuario a la aplicación");
+const loginUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, password } = req.body;
+        const credentialId = yield (0, credentialsService_1.validateCredential)({ username, password });
+        if (!credentialId) {
+            return res.status(400).json({ message: "Credenciales incorrectas" });
+        }
+        const user = yield UserRepository_1.default.findOne({
+            where: { credentials: { id: credentialId } },
+            relations: ["credentials"],
+        });
+        if (!user) {
+            return res.status(400).json({ message: "Usuario no encontrado" });
+        }
+        res.status(200).json({
+            login: true,
+            user: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                birthdate: user.birthdate,
+                nDni: user.nDni,
+                profileImage: user.profileImage, // Incluimos la imagen de perfil 
+            },
+        });
+    }
+    catch (error) {
+        next(error);
+    }
 });
 exports.loginUser = loginUser;
-// export const deleteUser = async (req: Request, res:Response) => {
-//     const {id} = req.body
-//     await deleteUserService(id)
-//     res.status(200).json({ message:"Eliminado correctamente"});
-// };
+const createUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { username, password, name, email, birthdate, nDni } = req.body;
+        if (!username || !password || !name || !email || !birthdate || !nDni) {
+            return res.status(400).json({ message: "Faltan datos requeridos" });
+        }
+        const credential = yield (0, credentialsService_1.createCredential)({ username, password });
+        const newUser = yield (0, usersService_1.createUserService)({ name, email, birthdate, nDni, credentialsId: credential.id, });
+        newUser.credentials = credential;
+        yield UserRepository_1.default.save(newUser);
+        yield mailService_1.mailService.sendMail(email, 'Bienvenido a DogSpa', `Hola ${name},\n\nGracias por registrarte en DogSpa, estamos contentos de tenerte aquí, espero podamos darle un día de relajación y disfrute a tu perrito!.`);
+        res.status(201).json(newUser);
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.createUser = createUser;
+const updateUserProfileImage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const userId = Number(req.params.id);
+        const imagePath = (_a = req.file) === null || _a === void 0 ? void 0 : _a.path; // Extrae la ruta temporal de la imagen que ha sido cargada en el servidor a través del middleware multer. req.file?.path accede a la ruta de la imagen almacenada temporalmente
+        if (!imagePath) {
+            return res.status(400).json({ message: "No se ha proporcionado ninguna imagen." });
+        }
+        const updatedUser = yield (0, updateUserProfileImageService_1.updateUserProfileImageService)(userId, imagePath);
+        res.status(200).json({ message: "Imagen de perfil actualizada exitosamente", user: updatedUser });
+    }
+    catch (error) {
+        console.error("Error en updateUserProfileImage:", error.message);
+        next(error);
+    }
+});
+exports.updateUserProfileImage = updateUserProfileImage;

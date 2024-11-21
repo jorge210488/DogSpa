@@ -1,5 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PORT = void 0;
+exports.EMAIL_PASS = exports.EMAIL_USER = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.CLOUDINARY_CLOUD_NAME = exports.DB_NAME = exports.DB_PASSWORD = exports.DB_USERNAME = exports.DB_PORT = exports.DB_HOST = exports.PORT = void 0;
 require("dotenv/config");
 exports.PORT = process.env.PORT;
+exports.DB_HOST = process.env.DB_HOST;
+exports.DB_PORT = process.env.DB_PORT;
+exports.DB_USERNAME = process.env.DB_USERNAME;
+exports.DB_PASSWORD = process.env.DB_PASSWORD;
+exports.DB_NAME = process.env.DB_NAME;
+exports.CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
+exports.CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY;
+exports.CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET;
+exports.EMAIL_USER = process.env.EMAIL_USER;
+exports.EMAIL_PASS = process.env.EMAIL_PASS;

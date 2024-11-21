@@ -1,0 +1,24 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TimeRange = void 0;
+var TimeRange;
+(function (TimeRange) {
+    TimeRange["NINE_TO_TEN"] = "09:00-10:00";
+    TimeRange["NINE_TO_ELEVEN"] = "09:00-11:00";
+    TimeRange["TEN_TO_ELEVEN"] = "10:00-11:00";
+    TimeRange["TEN_TO_TWELVE"] = "10:00-12:00";
+    TimeRange["ELEVEN_TO_TWELVE"] = "11:00-12:00";
+    TimeRange["ELEVEN_TO_THIRTEEN"] = "11:00-13:00";
+    TimeRange["TWELVE_TO_THIRTEEN"] = "12:00-13:00";
+    TimeRange["TWELVE_TO_FOURTEEN"] = "12:00-14:00";
+    TimeRange["THIRTEEN_TO_FOURTEEN"] = "13:00-14:00";
+    TimeRange["THIRTEEN_TO_FIFTEEN"] = "13:00-15:00";
+    TimeRange["FOURTEEN_TO_FIFTEEN"] = "14:00-15:00";
+    TimeRange["FOURTEEN_TO_SIXTEEN"] = "14:00-16:00";
+    TimeRange["FIFTEEN_TO_SIXTEEN"] = "15:00-16:00";
+    TimeRange["FIFTEEN_TO_SEVENTEEN"] = "15:00-17:00";
+    TimeRange["SIXTEEN_TO_SEVENTEEN"] = "16:00-17:00";
+    TimeRange["SIXTEEN_TO_EIGHTEEN"] = "16:00-18:00";
+    TimeRange["SEVENTEEN_TO_EIGHTEEN"] = "17:00-18:00";
+    TimeRange["SEVENTEEN_TO_NINETEEN"] = "17:00-19:00";
+})(TimeRange || (exports.TimeRange = TimeRange = {}));

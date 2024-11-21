@@ -3,14 +3,29 @@ import styles from "../styles/UnTurno.module.scss";
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { setUserAppointments } from '../redux/reducer';
+import Swal from 'sweetalert2';
 
 const Appointment = ({ id, date, userId, time, status, isHeader }) => {
     const dispatch = useDispatch();
     const userAppointments = useSelector((state) => state.user.userAppointments);
 
     const handleCancel = async () => {
-        const confirmCancel = window.confirm("¿Estás seguro? No es posible reagendar después de cancelado");
-        if (!confirmCancel) return; // Si el usuario cancela no se hace nada
+        const confirmCancel = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'No es posible reagendar después de cancelado.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, volver',
+        });
+    
+        if (!confirmCancel.isConfirmed) return; // Si el usuario cancela, no se hace nada
+    
+        // Aquí puedes ejecutar la lógica de cancelación si el usuario confirma
+        // console.log('Cita cancelada');
+
 
         try {
             const response = await axios.put(`http://localhost:3000/appointments/cancel/${id}`);
@@ -21,12 +36,32 @@ const Appointment = ({ id, date, userId, time, status, isHeader }) => {
                 );
 
                 dispatch(setUserAppointments(updatedAppointments)); // Actualizamos el store con el turno actualizado
+            
+             await Swal.fire({
+                title: 'Cancelación Exitosa',
+                text: 'El turno ha sido cancelado correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar',
+            });
+            
             } else {
                 console.error('Error al cancelar el turno:', response.statusText);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al cancelar el turno. Por favor, inténtalo nuevamente.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar',
+                });
             }
         } catch (error) {
             console.error('Error al cancelar el turno:', error);
-            alert('Hubo un problema al cancelar el turno. Por favor, inténtalo nuevamente.');
+            // alert('Hubo un problema al cancelar el turno. Por favor, inténtalo nuevamente.');
+            Swal.fire({
+                title: 'Error',
+                text: 'Hubo un problema al cancelar el turno. Por favor, inténtalo nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar',
+            });
         }
     };
 

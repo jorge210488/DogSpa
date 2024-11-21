@@ -5,6 +5,7 @@ import { validateAppointmentForm } from "../helpers/validateAppointmentForm";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDog } from '@fortawesome/free-solid-svg-icons';
 import styles from "../styles/AppointmentForm.module.css"; 
+import Swal from 'sweetalert2';
 
 const AppointmentForm = ({ onSubmit }) => {
     const [newAppointment, setNewAppointment] = useState({
@@ -27,7 +28,7 @@ const AppointmentForm = ({ onSubmit }) => {
         setErrors({ ...errors, [name]: fieldErrors[name] });
     };
 
-    const handleFormSubmit = (e) => {
+    const handleFormSubmit = async (e) => {
         e.preventDefault();
 
         const validationErrors = validateAppointmentForm(newAppointment);
@@ -35,11 +36,22 @@ const AppointmentForm = ({ onSubmit }) => {
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors); 
         } else {
-            const confirmation = window.confirm(
-                `Fecha: ${newAppointment.date}\nDuración: ${newAppointment.duration}\n\n¿Está seguro que desea agendar este turno? No se aceptan reprogramaciones una vez agendado.`
-            );
-
-            if (confirmation) {
+            const confirmation = await Swal.fire({
+                title: '¿Confirmar turno?',
+                html: `
+                    <p><strong>Fecha:</strong> ${newAppointment.date}</p>
+                    <p><strong>Duración:</strong> ${newAppointment.duration}</p>
+                    <p><em>¿Está seguro que desea agendar este turno? No se aceptan reprogramaciones una vez agendado.</em></p>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, agendar',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+            });
+        
+            if (confirmation.isConfirmed) {
                 onSubmit(newAppointment);
                 setNewAppointment({ date: "", duration: "" });
                 setShowForm(false);

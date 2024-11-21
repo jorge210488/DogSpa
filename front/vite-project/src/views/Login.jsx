@@ -6,6 +6,8 @@ import validateLoginForm from '../helpers/validateLoginForm';
 import { setUser } from '../redux/reducer'; 
 import styles from "../styles/Login.module.css";
 import Button from 'react-bootstrap/Button';
+import Swal from 'sweetalert2';
+
 
 const Login = () => {
     const [credentialData, setCredentialData] = useState({
@@ -52,14 +54,25 @@ const Login = () => {
 
             if (response.data && response.data.user) {
                 dispatch(setUser(response.data.user)); // Hace el dispatch de la acción setUser con los datos del usuario
-                alert("Inicio de sesión exitoso");
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Inicio de sesión exitoso',
+                    text: 'Bienvenido a DogSpa!',
+                    timer: 4000, // 4 segundos
+                    showConfirmButton: false,
+                });
                 navigate('/home'); // Redirigir al Home
             } else {
                 setErrors({ login: 'Login fallido' });
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
-            alert('Credenciales incorrectas. Por favor, inténtalo nuevamente.');
+            // alert('Credenciales incorrectas. Por favor, inténtalo nuevamente.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Fallido',
+                text: 'Credenciales incorrectas. Por favor, inténtalo nuevamente.',
+            });
         } finally {
             setIsSubmitting(false);
         }

@@ -8,6 +8,7 @@ import styles from "../styles/MisTurnos.module.scss";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { setUserAppointments, clearUserAppointments } from "../redux/reducer";
+import Swal from 'sweetalert2';
 
 const Appointments = () => {
     const navigate = useNavigate();
@@ -42,11 +43,22 @@ const Appointments = () => {
                 time: appointmentData.duration, 
                 userId: user.id
             });
-            alert("El turno fue agendado exitosamente");
+            // alert("El turno fue agendado exitosamente");
+            Swal.fire({
+                icon: 'info',
+                title: 'El turno fue agendado exitosamente',
+                // text: 'Bienvenido a DogSpa!',
+                // timer: 4000, 
+                // showConfirmButton: false,
+            });
             fetchAppointments(); // Recargarmos las citas nuevamente
         } catch (error) {
             console.error("Error al agendar el turno:", error);
-            alert("El Turno no pudo ser agendado, por favor intente nuevamente.");
+            // alert("El Turno no pudo ser agendado, por favor intente nuevamente.");
+            Swal.fire({
+                icon: 'error',
+                title: 'El Turno no pudo ser agendado, por favor intente nuevamente.',
+            });
         }
     };
 
