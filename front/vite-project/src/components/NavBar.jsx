@@ -6,12 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaw, faUserGear, faCakeCandles, faAddressCard, faEnvelopeCircleCheck, faImage } from '@fortawesome/free-solid-svg-icons'; 
 import styles from "../styles/NavBar.module.css";
 import axios from 'axios';
+import Login from './Login'; // Importamos el componente Login
 
 const NavBar = () => {
     const user = useSelector((state) => state.user.user); 
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [showDropdown, setShowDropdown] = useState(false);
+    const [showLoginModal, setShowLoginModal] = useState(false); // Estado para controlar el modal de login
 
     const handleLogout = () => {
         dispatch(clearUser()); 
@@ -20,6 +22,14 @@ const NavBar = () => {
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
+    };
+
+    const toggleLoginModal = () => {
+        setShowLoginModal(!showLoginModal); // Alterna el estado del modal
+    };
+
+    const closeLoginModal = () => {
+        setShowLoginModal(false); // Cierra el modal
     };
 
     const handleProfileImageChange = async (event) => {
@@ -75,7 +85,7 @@ const NavBar = () => {
                     <>
                         <span className={styles.userName}>{user.name}</span>
                         <div className={styles.userDropdown}>
-                            <FontAwesomeIcon icon={faUserGear} className={styles.userGearIcon} onClick={toggleDropdown}/>
+                            <FontAwesomeIcon icon={faUserGear} className={styles.userGearIcon} onClick={toggleDropdown} />
                             {showDropdown && (
                                 <div className={styles.dropdownMenu}>
                                     <label htmlFor="profileImageInput" className={styles.dropdownItem}>
@@ -104,11 +114,24 @@ const NavBar = () => {
                     </>
                 ) : (
                     <>
-                        <Link to="/login" className={styles.btnLogin}>Log in</Link>
+                        <button onClick={toggleLoginModal} className={styles.btnLogin}>Log in</button>
                         <Link to="/register" className={styles.btnSignup}>Sign up</Link>
                     </>
                 )}
             </div>
+
+            {/* Modal de Login */}
+            {showLoginModal && (
+                <div 
+                    className={styles.modal} 
+                    onClick={(e) => e.target.className === styles.modal && closeLoginModal()} // Detecta clic fuera del modal
+                >
+                    <div className={styles.modalContent}>
+                        <button className={styles.closeButton} onClick={closeLoginModal}>×</button>
+                        <Login onLoginSuccess={closeLoginModal} /> {/* Pasamos la función al componente Login */}
+                    </div>
+                </div>
+            )}
         </nav>
     );
 }

@@ -8,8 +8,7 @@ import styles from "../styles/Login.module.css";
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 
-
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
     const [credentialData, setCredentialData] = useState({
         username: "",
         password: "",
@@ -27,7 +26,7 @@ const Login = () => {
             [name]: value,
         });
 
-        // esta validación es en tiempo real
+        // Validación en tiempo real
         const validationErrors = validateLoginForm({
             ...credentialData,
             [name]: value,
@@ -39,7 +38,7 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault(); 
 
-        // esta validación es antes de enviar
+        // Validación antes de enviar
         const validationErrors = validateLoginForm(credentialData);
         if (Object.keys(validationErrors).length > 0) {
             setErrors(validationErrors);
@@ -53,7 +52,7 @@ const Login = () => {
             console.log('Login exitoso:', response.data);
 
             if (response.data && response.data.user) {
-                dispatch(setUser(response.data.user)); // Hace el dispatch de la acción setUser con los datos del usuario
+                dispatch(setUser(response.data.user)); // Actualiza el estado global
                 Swal.fire({
                     icon: 'success',
                     title: 'Inicio de sesión exitoso',
@@ -61,13 +60,13 @@ const Login = () => {
                     timer: 4000, // 4 segundos
                     showConfirmButton: false,
                 });
-                navigate('/home'); // Redirigir al Home
+                onLoginSuccess(); // Cierra el modal
+                navigate('/home'); // Redirige al Home
             } else {
                 setErrors({ login: 'Login fallido' });
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
-            // alert('Credenciales incorrectas. Por favor, inténtalo nuevamente.');
             Swal.fire({
                 icon: 'error',
                 title: 'Login Fallido',
@@ -85,6 +84,7 @@ const Login = () => {
                 <input
                     type="text"
                     name="username"
+                    id="username"
                     className="form-control"
                     placeholder="Ej: fulanito123"
                     value={credentialData.username}
@@ -98,6 +98,7 @@ const Login = () => {
                 <input
                     type="password"
                     name="password"
+                    id="password"
                     className="form-control"
                     value={credentialData.password}
                     onChange={handleChange}
@@ -105,9 +106,10 @@ const Login = () => {
                 {errors.password && <div className="text-danger">{errors.password}</div>}
             </div>
 
-            <Button variant="primary" type="submit" disabled={isSubmitting}>
+            <Button variant="primary" type="submit" className="formButton" disabled={isSubmitting}>
                 {isSubmitting ? 'Iniciando Sesión...' : 'Iniciar Sesión'}
             </Button>
+
             {errors.login && <div className="text-danger">{errors.login}</div>}
         </form>
     );
