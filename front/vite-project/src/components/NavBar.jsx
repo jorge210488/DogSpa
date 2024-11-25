@@ -117,6 +117,91 @@ const NavBar = () => {
     };
   }, []);
 
+  const [editingField, setEditingField] = useState(null); // Campo en edición
+  const [editValues, setEditValues] = useState({
+    email: user?.email || "",
+    birthdate: user?.birthdate || "",
+    nDni: user?.nDni || "",
+  });
+
+  // Actualiza los datos del usuario
+  const handleUpdateUser = async (id, updatedData) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/users/${id}`,
+        updatedData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.data && response.data.user) {
+        dispatch(setUser(response.data.user)); // Actualiza el estado global
+      }
+    } catch (error) {
+      console.error("Error updating user:", error);
+      throw error;
+    }
+  };
+
+  // Confirma la edición de un campo
+  const handleConfirmEdit = async (field) => {
+    setEditingField(null);
+    if (editValues[field] === user[field]) return;
+
+    const confirmed = await Swal.fire({
+      icon: "warning",
+      title: "¿Estás seguro?",
+      text: `¿Deseas actualizar el campo ${field}?`,
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, actualizar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        await handleUpdateUser(user.id, { [field]: editValues[field] });
+        Swal.fire(
+          "Actualizado",
+          `El campo ${field} se actualizó correctamente.`,
+          "success"
+        );
+      } catch (error) {
+        Swal.fire("Error", "Hubo un problema al actualizar el campo.", "error");
+      }
+    } else {
+      setEditValues({ ...editValues, [field]: user[field] });
+    }
+  };
+
+  // Maneja la tecla "Enter"
+  const handleKeyDown = (e, field) => {
+    if (e.key === "Enter") {
+      handleConfirmEdit(field);
+    }
+  };
+
+  // Detecta clic fuera del campo en edición
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        editingField &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
+        handleConfirmEdit(editingField);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [editingField]);
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarBrand}>
@@ -166,15 +251,79 @@ const NavBar = () => {
                     style={{ display: "none" }}
                     onChange={handleProfileImageChange}
                   />
-                  <div className={styles.dropdownItem}>
-                    <FontAwesomeIcon icon={faEnvelopeCircleCheck} />{" "}
-                    {user.email}
+                  <div
+                    className={styles.dropdownItem}
+                    onDoubleClick={() => setEditingField("email")}
+                  >
+                    <FontAwesomeIcon icon={faEnvelopeCircleCheck} />
+                    {editingField === "email" ? (
+                      <input
+                        type="text"
+                        value={editValues.email}
+                        onChange={(e) =>
+                          setEditValues({
+                            ...editValues,
+                            email: e.target.value,
+                          })
+                        }
+                        onBlur={() => handleConfirmEdit("email")}
+                        onKeyDown={(e) => handleKeyDown(e, "email")}
+                        className={styles.editInput}
+                        autoFocus
+                      />
+                    ) : (
+                      <span>{user.email}</span>
+                    )}
                   </div>
-                  <div className={styles.dropdownItem}>
-                    <FontAwesomeIcon icon={faCakeCandles} /> {user.birthdate}
+
+                  <div
+                    className={styles.dropdownItem}
+                    onDoubleClick={() => setEditingField("birthdate")}
+                  >
+                    <FontAwesomeIcon icon={faCakeCandles} />
+                    {editingField === "birthdate" ? (
+                      <input
+                        type="date"
+                        value={editValues.birthdate}
+                        onChange={(e) =>
+                          setEditValues({
+                            ...editValues,
+                            birthdate: e.target.value,
+                          })
+                        }
+                        onBlur={() => handleConfirmEdit("birthdate")}
+                        onKeyDown={(e) => handleKeyDown(e, "birthdate")}
+                        className={styles.editInput}
+                        autoFocus
+                      />
+                    ) : (
+                      <span>{user.birthdate}</span>
+                    )}
                   </div>
-                  <div className={styles.dropdownItem}>
-                    <FontAwesomeIcon icon={faAddressCard} /> {user.nDni}
+
+                  <div
+                    className={styles.dropdownItem}
+                    onDoubleClick={() => setEditingField("nDni")}
+                  >
+                    <FontAwesomeIcon icon={faAddressCard} />
+                    {editingField === "nDni" ? (
+                      <input
+                        type="number"
+                        value={editValues.nDni}
+                        onChange={(e) =>
+                          setEditValues({
+                            ...editValues,
+                            nDni: e.target.value,
+                          })
+                        }
+                        onBlur={() => handleConfirmEdit("nDni")}
+                        onKeyDown={(e) => handleKeyDown(e, "nDni")}
+                        className={styles.editInput}
+                        autoFocus
+                      />
+                    ) : (
+                      <span>{user.nDni}</span>
+                    )}
                   </div>
                 </div>
               )}
