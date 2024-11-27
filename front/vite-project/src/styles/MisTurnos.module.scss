@@ -1,24 +1,24 @@
 .appointmentsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 0px;
-    margin: 0 auto;
-    max-width: 80%;
-    padding: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  margin: 0 auto;
+  max-width: 80%;
+  padding: 0px;
 }
 
 .noAppointments {
-    text-align: center;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 20px;
 
-    p {
-        font-size: 1.2rem;
-        color: #555;
-    }
+  p {
+    font-size: 1.2rem;
+    color: #555;
+  }
 
-    img {
-        margin-top: 15px;
-        width: 150px;
-        height: auto;
-    }
+  img {
+    margin-top: 15px;
+    width: 150px;
+    height: auto;
+  }
 }
