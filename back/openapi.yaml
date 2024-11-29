@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Users and Appointments API
+  version: 1.0.0
+  description: API for managing users and appointments in DogSpa.
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Retrieve a list of users.
+      responses:
+        "200":
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserDto"
+    post:
+      summary: Create a new user
+      description: Register a new user in the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserDto"
+      responses:
+        "201":
+          description: User created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+
+  /appointments:
+    get:
+      summary: Get all appointments
+      description: Retrieve a list of all appointments.
+      responses:
+        "200":
+          description: A list of appointments.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AppointmentDto"
+        "404":
+          description: No appointments found.
+    post:
+      summary: Schedule a new appointment
+      description: Create a new appointment for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentDto"
+      responses:
+        "201":
+          description: Appointment scheduled successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentDto"
+
+  /appointments/{id}:
+    get:
+      summary: Get appointment details
+      description: Retrieve details of a specific appointment.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the appointment.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment details retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentDto"
+        "404":
+          description: Appointment not found.
+    delete:
+      summary: Cancel an appointment
+      description: Cancel an existing appointment.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the appointment.
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment canceled successfully.
+        "404":
+          description: Appointment not found.
+
+components:
+  schemas:
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: John Doe
+        email:
+          type: string
+          example: john.doe@example.com
+        birthdate:
+          type: string
+          format: date
+          example: 1990-01-01
+        nDni:
+          type: integer
+          example: 12345678
+        credentialsId:
+          type: integer
+          example: 10
+    CreateUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Jane Doe
+        email:
+          type: string
+          example: jane.doe@example.com
+        birthdate:
+          type: string
+          format: date
+          example: 1995-06-15
+        nDni:
+          type: integer
+          example: 98765432
+        username:
+          type: string
+          example: janedoe
+        password:
+          type: string
+          example: password123
+    AppointmentDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        date:
+          type: string
+          format: date
+          example: 2024-08-08
+        time:
+          type: string
+          enum:
+            - "09:00-10:00"
+            - "09:00-11:00"
+            - "10:00-11:00"
+            - "10:00-12:00"
+            - "11:00-12:00"
+            - "11:00-13:00"
+            - "12:00-13:00"
+            - "12:00-14:00"
+            - "13:00-14:00"
+            - "13:00-15:00"
+            - "14:00-15:00"
+            - "14:00-16:00"
+            - "15:00-16:00"
+            - "15:00-17:00"
+            - "16:00-17:00"
+            - "16:00-18:00"
+            - "17:00-18:00"
+            - "17:00-19:00"
+          example: "11:00-13:00"
+        userId:
+          type: integer
+          example: 1
+        status:
+          type: string
+          enum:
+            - active
+            - cancelled
+          example: active
+    CreateAppointmentDto:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: 2024-08-08
+        time:
+          type: string
+          enum:
+            - "09:00-10:00"
+            - "09:00-11:00"
+            - "10:00-11:00"
+            - "10:00-12:00"
+            - "11:00-12:00"
+            - "11:00-13:00"
+            - "12:00-13:00"
+            - "12:00-14:00"
+            - "13:00-14:00"
+            - "13:00-15:00"
+            - "14:00-15:00"
+            - "14:00-16:00"
+            - "15:00-16:00"
+            - "15:00-17:00"
+            - "16:00-17:00"
+            - "16:00-18:00"
+            - "17:00-18:00"
+            - "17:00-19:00"
+          example: "09:00-10:00"
+        userId:
+          type: integer
+          example: 1
